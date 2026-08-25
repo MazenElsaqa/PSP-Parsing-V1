@@ -1,0 +1,16 @@
+ocr:
+  enabled: true
+  force_full_page: false
+  languages: [en]
+tables:
+  mode: accurate
+  do_cell_matching: true
+image_scale: 2.0
+generate_page_images: true
+generate_picture_images: true
+repeated_text_min_pages: 3
+qa:
+  expected_pages: 27
+  minimum_text_characters: 100
+  maximum_heading_level_jump: 1
+  minimum_table_fill_ratio: 0.5
