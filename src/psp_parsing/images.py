@@ -119,6 +119,17 @@ def extract_images(
         final_path = output_dir / f"{base_id}_{complexity}.png"
         temporary_path.rename(final_path)
         metadata_path = output_dir / f"{base_id}_{complexity}.json"
+        ocr_text = str(getattr(item, "text", "") or "")
+
+        caption: str | None = None
+        if caption_fn is not None and kind not in skip_caption_kinds:
+            # Called exactly once per unique image hash. Duplicate
+            # occurrences below reuse this value via model_copy.
+            caption = caption_fn(
+                final_path,
+                {"page": page, "kind": kind, "ocr_text": ocr_text},
+            )
+
         asset = ImageAsset(
             id=occurrence_id,
             document_id=document_id,
@@ -130,8 +141,9 @@ def extract_images(
             source_element_id=occurrence_id,
             image_path=final_path,
             metadata_path=metadata_path,
+            caption=caption,
             bbox=bbox,
-            ocr_text=str(getattr(item, "text", "") or ""),
+            ocr_text=ocr_text,
             image_hash=image_hash,
             is_duplicate=False,
         )
