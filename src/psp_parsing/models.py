@@ -101,6 +101,8 @@ class ImageAsset(BaseModel):
     bbox: BoundingBox | None = None
     ocr_text: str = ""
     ocr_confidence: float | None = None
+    image_hash: str = ""
+    is_duplicate: bool = False
 
 
 class ValidationFinding(BaseModel):
