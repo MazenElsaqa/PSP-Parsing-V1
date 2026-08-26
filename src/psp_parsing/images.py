@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +11,8 @@ import numpy as np
 from PIL import Image, ImageFilter
 
 from .models import BoundingBox, ImageAsset
+
+CaptionFn = Callable[[Path, dict[str, Any]], str]
 
 
 def _classify(image_path: Path) -> tuple[str, str, float, list[str]]:
@@ -57,11 +60,28 @@ def _hash_image(image: Image.Image) -> str:
     return hashlib.sha256(buffer.getvalue()).hexdigest()
 
 
-def extract_images(document: Any, document_id: str, output_dir: Path) -> list[ImageAsset]:
+def extract_images(
+    document: Any,
+    document_id: str,
+    output_dir: Path,
+    caption_fn: CaptionFn | None = None,
+    skip_caption_kinds: set[str] | None = None,
+) -> list[ImageAsset]:
+    """Extract every picture in the document, deduplicated by content hash.
+
+    `caption_fn`, when provided, is called exactly once per unique image
+    (never per occurrence) to generate an AI caption. Every later occurrence
+    of the same image hash reuses that caption via `model_copy`, so no
+    extra model calls happen for repeated logos, headers, or icons.
+    `skip_caption_kinds` lets heuristically-classified kinds (e.g.
+    "logo/icon") skip the model call entirely and fall back to a plain
+    label instead.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
     assets: list[ImageAsset] = []
     page_counts: dict[int, int] = {}
     hash_cache: dict[str, ImageAsset] = {}
+    skip_caption_kinds = skip_caption_kinds or set()
 
     for item in getattr(document, "pictures", []):
         page, bbox = _location(item)

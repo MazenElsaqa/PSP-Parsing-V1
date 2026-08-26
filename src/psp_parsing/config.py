@@ -25,10 +25,25 @@ class QaThresholds(BaseModel):
     minimum_table_fill_ratio: float = 0.5
 
 
+class CaptionConfig(BaseModel):
+    """AI-generated caption settings for extracted figures/pictures.
+
+    Captions are only generated once per unique image hash; every
+    duplicate occurrence of the same image reuses the cached caption
+    without an extra model call.
+    """
+
+    enabled: bool = False
+    model: str = "openai/gpt-4o-mini"
+    max_output_tokens: int = 220
+    skip_kinds: list[str] = Field(default_factory=lambda: ["logo/icon"])
+
+
 class PipelineConfig(BaseModel):
     ocr: OcrConfig = Field(default_factory=OcrConfig)
     tables: TableConfig = Field(default_factory=TableConfig)
     qa: QaThresholds = Field(default_factory=QaThresholds)
+    captions: CaptionConfig = Field(default_factory=CaptionConfig)
     image_scale: float = 2.0
     generate_page_images: bool = True
     generate_picture_images: bool = True
