@@ -1,0 +1,13 @@
+ocr:
+  enabled: true
+  force_full_page: false
+  languages: [en]
+tables:
+  mode: fast
+  do_cell_matching: true
+image_scale: 2.0
+generate_page_images: true
+generate_picture_images: true
+qa:
+  expected_pages: 27
+  minimum_table_fill_ratio: 0.5

@@ -1,0 +1,22 @@
+{
+  "document_id": "replace-after-baseline",
+  "samples": [
+    {
+      "page": 1,
+      "types": ["heading", "list_item"],
+      "expected_text": "Paste manually verified text here",
+      "heading_levels": [],
+      "reading_order_element_ids": [],
+      "notes": "Use representative TOC, heading, list, table, and figure pages."
+    }
+  ],
+  "tables": [
+    {
+      "page": 0,
+      "table_id": "replace-after-baseline",
+      "rows": [],
+      "merged_cells": [],
+      "notes": "Verify against the rendered PDF, not another parser."
+    }
+  ]
+}
