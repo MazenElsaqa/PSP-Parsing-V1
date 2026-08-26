@@ -11,7 +11,7 @@ generate_picture_images: true
 repeated_text_min_pages: 3
 captions:
   enabled: true
-  model: openai/gpt-4o-mini
+  model: gpt-4o-mini
   max_output_tokens: 220
   skip_kinds: [logo/icon]
 qa:

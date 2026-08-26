@@ -1,9 +1,9 @@
 """AI-generated captions for extracted figures/pictures.
 
-Uses the Vercel AI Gateway (OpenAI-compatible Chat Completions API) with a
-vision-capable model. Captions are generated once per unique image hash by
-the caller (see images.py) -- this module only knows how to caption a single
-image file and never decides on its own whether an image is a duplicate.
+Uses the OpenAI API directly (Chat Completions) with a vision-capable
+model. Captions are generated once per unique image hash by the caller
+(see images.py) -- this module only knows how to caption a single image
+file and never decides on its own whether an image is a duplicate.
 """
 
 from __future__ import annotations
@@ -15,8 +15,6 @@ from pathlib import Path
 from typing import Any
 
 logger = logging.getLogger(__name__)
-
-_AI_GATEWAY_BASE_URL = "https://ai-gateway.vercel.sh/v1"
 
 _SYSTEM_PROMPT = (
     "You caption figures extracted from an engineering (instrumentation & "
@@ -40,19 +38,20 @@ def _build_client() -> Any:
     # `openai` package installed or an API key configured.
     from openai import OpenAI
 
-    api_key = os.environ.get("AI_GATEWAY_API_KEY")
+    api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         raise RuntimeError(
-            "AI_GATEWAY_API_KEY is not set. Add it to the project environment "
-            "variables before enabling captions.enabled in the pipeline config."
+            "OPENAI_API_KEY is not set. Export it in your shell (or add it "
+            "to a local .env loaded by your app) before enabling "
+            "captions.enabled in the pipeline config."
         )
-    return OpenAI(api_key=api_key, base_url=_AI_GATEWAY_BASE_URL)
+    return OpenAI(api_key=api_key)
 
 
 def generate_caption_for_image(
     image_path: Path,
     context: dict[str, Any] | None = None,
-    model: str = "openai/gpt-4o-mini",
+    model: str = "gpt-4o-mini",
     max_output_tokens: int = 220,
 ) -> str:
     """Generate one AI caption for a single (already deduplicated) image.

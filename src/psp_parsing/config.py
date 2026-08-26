@@ -34,7 +34,7 @@ class CaptionConfig(BaseModel):
     """
 
     enabled: bool = False
-    model: str = "openai/gpt-4o-mini"
+    model: str = "gpt-4o-mini"
     max_output_tokens: int = 220
     skip_kinds: list[str] = Field(default_factory=lambda: ["logo/icon"])
 
