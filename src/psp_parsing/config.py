@@ -34,7 +34,7 @@ class CaptionConfig(BaseModel):
     """
 
     enabled: bool = False
-    model: str = "gpt-4o-mini"
+    model: str = "gemini-2.0-flash"
     max_output_tokens: int = 220
     skip_kinds: list[str] = Field(default_factory=lambda: ["logo/icon"])
 
